@@ -16,7 +16,7 @@ class PasswordEncodeTest {
     @Test
     void testPassword() {
         final var encoder = new BCryptPasswordEncoder();
-        final var pw = encoder.encode("123456");
+        final var pw = encoder.encode("password");
         System.out.println("[ "+ pw + " ]");
     }
 }

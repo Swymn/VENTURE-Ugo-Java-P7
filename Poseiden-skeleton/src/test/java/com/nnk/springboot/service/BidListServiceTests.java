@@ -108,4 +108,15 @@ class BidListServiceTests {
         // THEN the repository is called once
         Mockito.verify(bidListRepository, Mockito.times(1)).deleteById(id);
     }
+
+    @Test
+    void findALlBidList_findAllBidList() {
+        // GIVEN no bid
+
+        // WHEN finding all bids
+        bidListService.findAllBidList();
+
+        // THEN the repository is called once
+        Mockito.verify(bidListRepository, Mockito.times(1)).findAll();
+    }
 }

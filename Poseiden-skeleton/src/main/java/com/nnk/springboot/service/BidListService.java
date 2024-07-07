@@ -3,6 +3,7 @@ package com.nnk.springboot.service;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.errors.UnknownBidList;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,8 +30,14 @@ public interface BidListService {
     void deleteBidList(final Integer id);
 
     /**
-     * Find all BidList
-     * @param id the id of the BidList to delete
+     * Find by id BidList
+     * @param id the id of the BidList to get
      */
     Optional<BidList> findBidListById(final Integer id);
+
+    /**
+     * Find all BidList
+     * @return a list of all BidList
+     */
+    List<BidList> findAllBidList();
 }

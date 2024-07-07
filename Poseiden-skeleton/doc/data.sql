@@ -79,7 +79,7 @@ CREATE TABLE rule_name (
   PRIMARY KEY (Id)
 );
 
-CREATE TABLE users (
+CREATE TABLE user (
   Id TINYINT(4) NOT NULL AUTO_INCREMENT,
   username VARCHAR(125),
   password VARCHAR(125),
@@ -88,6 +88,6 @@ CREATE TABLE users (
   PRIMARY KEY (Id)
 );
 
-INSERT INTO users(fullname, username, password, role) VALUES
-("Administrator", "admin", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "ADMIN"),
-("User", "user", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "USER");
+INSERT INTO user(fullname, username, password, role) VALUES
+("Administrator", "admin", "$2a$10$r8bNut7Pv0.r1t3YyX0mKOb5VUdTfqU8RNSjbQ/IPVbicSg08siNm", "ADMIN"),
+("User", "user", "$2a$10$r8bNut7Pv0.r1t3YyX0mKOb5VUdTfqU8RNSjbQ/IPVbicSg08siNm", "USER");

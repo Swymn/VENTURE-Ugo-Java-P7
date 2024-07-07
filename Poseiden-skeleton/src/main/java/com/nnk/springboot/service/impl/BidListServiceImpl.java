@@ -6,6 +6,7 @@ import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.service.BidListService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,5 +52,13 @@ public class BidListServiceImpl implements BidListService {
     @Override
     public Optional<BidList> findBidListById(final Integer id) {
         return bidListRepository.findById(id);
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public List<BidList> findAllBidList() {
+        return bidListRepository.findAll();
     }
 }
