@@ -11,19 +11,23 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("app")
 public class LoginController {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public LoginController(final UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("login")
     public ModelAndView login() {
-        ModelAndView mav = new ModelAndView();
+        final var mav = new ModelAndView();
         mav.setViewName("login");
         return mav;
     }
 
     @GetMapping("secure/article-details")
     public ModelAndView getAllUserArticles() {
-        ModelAndView mav = new ModelAndView();
+        final var mav = new ModelAndView();
         mav.addObject("users", userRepository.findAll());
         mav.setViewName("user/list");
         return mav;
@@ -31,8 +35,8 @@ public class LoginController {
 
     @GetMapping("error")
     public ModelAndView error() {
-        ModelAndView mav = new ModelAndView();
-        String errorMessage= "You are not authorized for the requested data.";
+        final var mav = new ModelAndView();
+        final var errorMessage= "You are not authorized for the requested data.";
         mav.addObject("errorMsg", errorMessage);
         mav.setViewName("403");
         return mav;
