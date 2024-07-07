@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "users")
 public class User {
 
     @Id
