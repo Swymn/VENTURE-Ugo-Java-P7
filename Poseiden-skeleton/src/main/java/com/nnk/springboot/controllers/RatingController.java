@@ -19,6 +19,12 @@ public class RatingController {
     private static final String RATING_ATTRIBUTE = "rating";
     private static final String MULTIPLE_RATING_ATTRIBUTE = "ratings";
 
+    private static final String RATING_LIST_VIEW = "rating/list";
+    private static final String RATING_ADD_VIEW = "rating/add";
+    private static final String RATING_UPDATE_VIEW = "rating/update";
+
+    private static final String ERROR_ATTRIBUTE = "error";
+
     private final RatingService ratingService;
 
     @Autowired
@@ -30,20 +36,20 @@ public class RatingController {
     public String home(final Model model) {
         final var rating = ratingService.findAllRating();
         model.addAttribute(MULTIPLE_RATING_ATTRIBUTE, rating);
-        return "rating/list";
+        return RATING_LIST_VIEW;
     }
 
     @GetMapping("/rating/add")
     public String addRatingForm(final Rating rating, final Model model) {
         model.addAttribute(RATING_ATTRIBUTE, rating);
-        return "rating/add";
+        return RATING_ADD_VIEW;
     }
 
     @PostMapping("/rating/validate")
     public String validate(@Valid final Rating rating, final BindingResult result, final Model model) {
         ratingService.saveRating(rating);
         model.addAttribute(RATING_ATTRIBUTE, rating);
-        return "rating/add";
+        return "redirect:/" + RATING_LIST_VIEW;
     }
 
     @GetMapping("/rating/update/{id}")
@@ -51,12 +57,12 @@ public class RatingController {
         final var rating = ratingService.findRatingById(id);
 
         if (rating.isEmpty()) {
-            model.addAttribute("error", "Unknown rating.");
-            return "rating/list";
+            model.addAttribute(ERROR_ATTRIBUTE, "Unknown rating.");
+            return RATING_LIST_VIEW;
         }
 
         model.addAttribute(RATING_ATTRIBUTE, rating.get());
-        return "rating/update";
+        return RATING_UPDATE_VIEW;
     }
 
     @PostMapping("/rating/update/{id}")
@@ -66,11 +72,10 @@ public class RatingController {
         try {
             ratingService.updateRating(rating);
         } catch (final UnknownRating e) {
-            model.addAttribute("error", e.getMessage());
-            return "rating/list";
+            model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+            return RATING_UPDATE_VIEW;
         }
-
-        return "redirect:/rating/list";
+        return "redirect:/" + RATING_LIST_VIEW;
     }
 
     @GetMapping("/rating/delete/{id}")
@@ -78,9 +83,9 @@ public class RatingController {
         try {
             ratingService.deleteRatingById(id);
         } catch (final UnknownRating e) {
-            model.addAttribute("error", e.getMessage());
-            return "rating/list";
+            model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+            return RATING_LIST_VIEW;
         }
-        return "redirect:/rating/list";
+        return "redirect:/" + RATING_LIST_VIEW;
     }
 }

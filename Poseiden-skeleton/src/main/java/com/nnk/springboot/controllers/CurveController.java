@@ -19,6 +19,12 @@ public class CurveController {
     private static final String CURVE_POINT_ATTRIBUTE = "curvePoint";
     private static final String MULTIPLE_CURVE_POINT_ATTRIBUTE = "curvePoints";
 
+    private static final String CURVE_POINT_LIST_VIEW = "curvePoint/list";
+    private static final String CURVE_POINT_ADD_VIEW = "curvePoint/add";
+    private static final String CURVE_POINT_UPDATE_VIEW = "curvePoint/update";
+
+    private static final String ERROR_ATTRIBUTE = "error";
+
     private final CurvePointService curvePointService;
 
     @Autowired
@@ -30,20 +36,20 @@ public class CurveController {
     public String home(final Model model) {
         final var curvePoints = curvePointService.findAllCurvePoints();
         model.addAttribute(MULTIPLE_CURVE_POINT_ATTRIBUTE, curvePoints);
-        return "curvePoint/list";
+        return CURVE_POINT_LIST_VIEW;
     }
 
     @GetMapping("/curvePoint/add")
     public String addBidForm(final CurvePoint bid, final Model model) {
         model.addAttribute(CURVE_POINT_ATTRIBUTE, bid);
-        return "curvePoint/add";
+        return CURVE_POINT_ADD_VIEW;
     }
 
     @PostMapping("/curvePoint/validate")
     public String validate(@Valid final CurvePoint curvePoint, final BindingResult result, final Model model) {
         curvePointService.saveCurvePoint(curvePoint);
         model.addAttribute(CURVE_POINT_ATTRIBUTE, curvePoint);
-        return "curvePoint/add";
+        return "redirect:/" + CURVE_POINT_LIST_VIEW;
     }
 
     @GetMapping("/curvePoint/update/{id}")
@@ -51,12 +57,12 @@ public class CurveController {
         final var curvePoint = curvePointService.findCurvePointById(id);
 
         if (curvePoint.isEmpty()) {
-            model.addAttribute("error", "Unknown curve point.");
-            return "curvePoint/list";
+            model.addAttribute(ERROR_ATTRIBUTE, "Unknown curve point.");
+            return CURVE_POINT_LIST_VIEW;
         }
 
         model.addAttribute(CURVE_POINT_ATTRIBUTE, curvePoint.get());
-        return "curvePoint/update";
+        return CURVE_POINT_UPDATE_VIEW;
     }
 
     @PostMapping("/curvePoint/update/{id}")
@@ -65,10 +71,10 @@ public class CurveController {
         try {
             curvePointService.updateCurvePoint(curvePoint);
         } catch (final UnknownCurvePoint e) {
-            model.addAttribute("error", "Unknown curve point.");
-            return "curvePoint/list";
+            model.addAttribute(ERROR_ATTRIBUTE, "Unknown curve point.");
+            return CURVE_POINT_UPDATE_VIEW;
         }
-        return "redirect:/curvePoint/list";
+        return "redirect:/" + CURVE_POINT_LIST_VIEW;
     }
 
     @GetMapping("/curvePoint/delete/{id}")
@@ -76,9 +82,9 @@ public class CurveController {
         try {
             curvePointService.deleteCurvePointById(id);
         } catch (final UnknownCurvePoint e) {
-            model.addAttribute("error", "Unknown curve point.");
-            return "curvePoint/list";
+            model.addAttribute(ERROR_ATTRIBUTE, "Unknown curve point.");
+            return CURVE_POINT_LIST_VIEW;
         }
-        return "redirect:/curvePoint/list";
+        return "redirect:/" + CURVE_POINT_LIST_VIEW;
     }
 }

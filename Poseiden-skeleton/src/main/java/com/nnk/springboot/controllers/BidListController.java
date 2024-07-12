@@ -19,6 +19,12 @@ public class BidListController {
     private static final String BID_LIST_ATTRIBUTE = "bidList";
     private static final String MULTIPLE_BID_LIST_ATTRIBUTE = "bidLists";
 
+    private static final String BID_LIST_LIST_VIEW = "bidList/list";
+    private static final String BID_LIST_ADD_VIEW = "bidList/add";
+    private static final String BID_LIST_UPDATE_VIEW = "bidList/update";
+
+    private static final String ERROR_ATTRIBUTE = "error";
+
     private final BidListService bidService;
 
     @Autowired
@@ -30,20 +36,20 @@ public class BidListController {
     public String home(final Model model) {
         final var bidLists = bidService.findAllBidList();
         model.addAttribute(MULTIPLE_BID_LIST_ATTRIBUTE, bidLists);
-        return "bidList/list";
+        return BID_LIST_LIST_VIEW;
     }
 
     @GetMapping("/bidList/add")
     public String addBidForm(final BidList bid, final Model model) {
         model.addAttribute(BID_LIST_ATTRIBUTE, bid);
-        return "bidList/add";
+        return BID_LIST_ADD_VIEW;
     }
 
     @PostMapping("/bidList/validate")
     public String validate(@Valid final BidList bid, final BindingResult result, final Model model) {
         bidService.saveBidList(bid);
         model.addAttribute(BID_LIST_ATTRIBUTE, bid);
-        return "bidList/add";
+        return "redirect:/" + BID_LIST_LIST_VIEW;
     }
 
     @GetMapping("/bidList/update/{id}")
@@ -51,12 +57,12 @@ public class BidListController {
         final var bid = bidService.findBidListById(id);
 
         if (bid.isEmpty()) {
-            model.addAttribute("error", "Unknown bid list.");
-            return "bidList/list";
+            model.addAttribute(ERROR_ATTRIBUTE, "Unknown bid list.");
+            return BID_LIST_LIST_VIEW;
         }
 
         model.addAttribute(BID_LIST_ATTRIBUTE, bid.get());
-        return "bidList/update";
+        return BID_LIST_UPDATE_VIEW;
     }
 
     @PostMapping("/bidList/update/{id}")
@@ -65,14 +71,20 @@ public class BidListController {
         try {
             bidService.updateBidList(bidList);
         } catch (final UnknownBidList e) {
-            model.addAttribute("error", "Unable to delete the bid list.");
+            model.addAttribute(ERROR_ATTRIBUTE, "Unable to delete the bid list.");
+            return BID_LIST_UPDATE_VIEW;
         }
-        return "redirect:/bidList/list";
+        return "redirect:/" + BID_LIST_LIST_VIEW;
     }
 
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") final Integer id, final Model model) {
-        bidService.deleteBidList(id);
-        return "redirect:/bidList/list";
+        try {
+            bidService.deleteBidList(id);
+        } catch (final UnknownBidList e) {
+            model.addAttribute(ERROR_ATTRIBUTE, "Unable to delete the bid list.");
+            return BID_LIST_LIST_VIEW;
+        }
+        return "redirect:/" + BID_LIST_LIST_VIEW;
     }
 }

@@ -19,6 +19,12 @@ public class UserController {
     private static final String USER_ATTRIBUTE = "user";
     private static final String MULTIPLE_USER_ATTRIBUTE = "users";
 
+    private static final String USER_LIST_VIEW = "user/list";
+    private static final String USER_ADD_VIEW = "user/add";
+    private static final String USER_UPDATE_VIEW = "user/update";
+
+    private static final String ERROR_ATTRIBUTE = "error";
+
     private final UserService userService;
 
     @Autowired
@@ -30,20 +36,20 @@ public class UserController {
     public String home(final Model model) {
         final var users = userService.findAllUsers();
         model.addAttribute(MULTIPLE_USER_ATTRIBUTE, users);
-        return "user/list";
+        return USER_LIST_VIEW;
     }
 
     @GetMapping("/user/add")
     public String addUser(final User bid, final Model model) {
         model.addAttribute(USER_ATTRIBUTE, bid);
-        return "user/add";
+        return USER_ADD_VIEW;
     }
 
     @PostMapping("/user/validate")
     public String validate(@Valid final User user, final BindingResult result, final Model model) {
         userService.saveUser(user);
         model.addAttribute(USER_ATTRIBUTE, user);
-        return "user/add";
+        return "redirect:/" + USER_LIST_VIEW;
     }
 
     @GetMapping("/user/update/{id}")
@@ -51,12 +57,12 @@ public class UserController {
         final var user = userService.findUserById(id);
 
         if (user.isEmpty()) {
-            model.addAttribute("error", "Unknown user.");
-            return "user/list";
+            model.addAttribute(ERROR_ATTRIBUTE, "Unknown user.");
+            return USER_LIST_VIEW;
         }
 
         model.addAttribute(USER_ATTRIBUTE, user.get());
-        return "user/update";
+        return USER_UPDATE_VIEW;
     }
 
     @PostMapping("/user/update/{id}")
@@ -65,11 +71,10 @@ public class UserController {
         try {
             userService.updateUser(user);
         } catch (final Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "user/update";
+            model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+            return USER_UPDATE_VIEW;
         }
-
-        return "redirect:/user/list";
+        return "redirect:/" + USER_LIST_VIEW;
     }
 
     @GetMapping("/user/delete/{id}")
@@ -77,9 +82,9 @@ public class UserController {
         try {
             userService.deleteUserById(id);
         } catch (final Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "user/list";
+            model.addAttribute(ERROR_ATTRIBUTE, e.getMessage());
+            return USER_LIST_VIEW;
         }
-        return "redirect:/user/list";
+        return "redirect:/" + USER_LIST_VIEW;
     }
 }
