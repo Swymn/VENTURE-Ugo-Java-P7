@@ -24,8 +24,8 @@ public class RatingServiceImpl implements RatingService {
      * {@inheritDoc}
      */
     @Override
-    public void saveRating(final Rating rating) {
-        ratingRepository.save(rating);
+    public Rating saveRating(final Rating rating) {
+        return ratingRepository.save(rating);
     }
 
     /**
@@ -48,9 +48,9 @@ public class RatingServiceImpl implements RatingService {
      * {@inheritDoc}
      */
     @Override
-    public void updateRating(final Rating rating) throws UnknownRating {
+    public Rating updateRating(final Rating rating) throws UnknownRating {
         if (ratingRepository.existsById(rating.getId())) {
-            ratingRepository.save(rating);
+            return ratingRepository.save(rating);
         } else {
             throw new UnknownRating(rating.getId());
         }

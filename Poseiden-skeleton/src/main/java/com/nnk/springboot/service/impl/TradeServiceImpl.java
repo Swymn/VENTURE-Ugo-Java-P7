@@ -24,8 +24,8 @@ public class TradeServiceImpl implements TradeService {
      * {@inheritDoc}
      */
     @Override
-    public void saveTrade(final Trade trade) {
-        tradeRepository.save(trade);
+    public Trade saveTrade(final Trade trade) {
+        return tradeRepository.save(trade);
     }
 
     /**
@@ -48,9 +48,9 @@ public class TradeServiceImpl implements TradeService {
      * {@inheritDoc}
      */
     @Override
-    public void updateTrade(final Trade trade) throws UnknownTrade {
+    public Trade updateTrade(final Trade trade) throws UnknownTrade {
         if (tradeRepository.existsById(trade.getTradeId())) {
-            tradeRepository.save(trade);
+            return tradeRepository.save(trade);
         } else {
             throw new UnknownTrade(trade.getTradeId());
         }

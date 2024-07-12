@@ -22,28 +22,16 @@ public class BidListServiceImpl implements BidListService {
      * @{inheritDoc}
      */
     @Override
-    public void saveBidList(final BidList bidList) {
-        bidListRepository.save(bidList);
+    public BidList saveBidList(final BidList bidList) {
+        return bidListRepository.save(bidList);
     }
 
     /**
      * @{inheritDoc}
      */
     @Override
-    public void updateBidList(final BidList bidList) {
-        final var existingBidList = bidListRepository.findById(bidList.getBidListId());
-        if (existingBidList.isEmpty()) {
-            throw new UnknownBidList(bidList.getBidListId());
-        }
-        bidListRepository.save(bidList);
-    }
-
-    /**
-     * @{inheritDoc}
-     */
-    @Override
-    public void deleteBidList(final Integer id) {
-        bidListRepository.deleteById(id);
+    public List<BidList> findAllBidList() {
+        return bidListRepository.findAll();
     }
 
     /**
@@ -58,7 +46,19 @@ public class BidListServiceImpl implements BidListService {
      * @{inheritDoc}
      */
     @Override
-    public List<BidList> findAllBidList() {
-        return bidListRepository.findAll();
+    public BidList updateBidList(final BidList bidList) throws UnknownBidList {
+        if (bidListRepository.existsById(bidList.getBidListId())) {
+            return bidListRepository.save(bidList);
+        } else {
+            throw new UnknownBidList(bidList.getBidListId());
+        }
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void deleteBidList(final Integer id) {
+        bidListRepository.deleteById(id);
     }
 }

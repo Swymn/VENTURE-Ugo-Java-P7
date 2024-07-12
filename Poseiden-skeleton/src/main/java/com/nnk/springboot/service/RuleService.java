@@ -15,7 +15,7 @@ public interface RuleService {
      * Save a new RuleName.
      * @param rule the RuleName to save
      */
-    void saveRule(RuleName rule);
+    RuleName saveRule(RuleName rule);
 
     /**
      * Find all RuleName.
@@ -35,7 +35,7 @@ public interface RuleService {
      * @param rule the RuleName to update
      * @throws UnknownRule if the RuleName is not found
      */
-    void updateRule(RuleName rule) throws UnknownRule;
+    RuleName updateRule(RuleName rule) throws UnknownRule;
 
     /**
      * Delete a RuleName by its id.

@@ -24,8 +24,8 @@ public class RuleServiceImpl implements RuleService {
      * {@inheritDoc}
      */
     @Override
-    public void saveRule(final RuleName rule) {
-        ruleRepository.save(rule);
+    public RuleName saveRule(final RuleName rule) {
+        return ruleRepository.save(rule);
     }
 
     /**
@@ -48,11 +48,11 @@ public class RuleServiceImpl implements RuleService {
      * {@inheritDoc}
      */
     @Override
-    public void updateRule(final RuleName rule) throws UnknownRule {
-        if (!ruleRepository.existsById(rule.getId())) {
-            throw new UnknownRule(rule.getId());
+    public RuleName updateRule(final RuleName rule) throws UnknownRule {
+        if (ruleRepository.existsById(rule.getId())) {
+            return ruleRepository.save(rule);
         } else {
-            ruleRepository.save(rule);
+            throw new UnknownRule(rule.getId());
         }
     }
 
@@ -61,10 +61,10 @@ public class RuleServiceImpl implements RuleService {
      */
     @Override
     public void deleteRuleById(Integer id) throws UnknownRule {
-        if (!ruleRepository.existsById(id)) {
-            throw new UnknownRule(id);
-        } else {
+        if (ruleRepository.existsById(id)) {
             ruleRepository.deleteById(id);
+        } else {
+            throw new UnknownRule(id);
         }
     }
 }

@@ -15,7 +15,7 @@ public interface RatingService {
      * Save a new Rating in the database.
      * @param rating The Rating to save.
      */
-    void saveRating(Rating rating);
+    Rating saveRating(Rating rating);
 
     /**
      * Get all the Ratings from the database.
@@ -35,7 +35,7 @@ public interface RatingService {
      * @param rating The Rating to update.
      * @throws UnknownRating If the Rating to update was not found in the database.
      */
-    void updateRating(Rating rating) throws UnknownRating;
+    Rating updateRating(Rating rating) throws UnknownRating;
 
     /**
      * Delete a Rating from the database.

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Optional;
+
 @SpringBootTest
 class BidListServiceTests {
 
@@ -60,7 +62,7 @@ class BidListServiceTests {
         final var id = 1;
 
         // WHEN finding the bid by id
-        Mockito.when(bidListRepository.findById(id)).thenReturn(java.util.Optional.empty());
+        Mockito.when(bidListRepository.findById(id)).thenReturn(Optional.empty());
         final var returnedBid = bidListService.findBidListById(id);
 
         // THEN the repository is called once
@@ -75,8 +77,7 @@ class BidListServiceTests {
         final var bid = new BidList("Account Test", "Type Test", 10d);
 
         // WHEN updating the bid
-        Mockito.when(bidListRepository.findById(bid.getBidListId())).thenReturn(java.util.Optional.of(bid));
-        Mockito.when(bidListRepository.save(bid)).thenReturn(bid);
+        Mockito.when(bidListRepository.existsById(bid.getBidListId())).thenReturn(true);
         bidListService.updateBidList(bid);
 
         // THEN the repository is called once
@@ -90,7 +91,7 @@ class BidListServiceTests {
 
         // WHEN updating the bid
         // THEN the repository is called once
-        Mockito.when(bidListRepository.findById(bid.getBidListId())).thenReturn(java.util.Optional.empty());
+        Mockito.when(bidListRepository.existsById(bid.getBidListId())).thenReturn(false);
         Assertions.assertThrows(UnknownBidList.class, () -> {
             bidListService.updateBidList(bid);
         });

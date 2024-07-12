@@ -15,19 +15,13 @@ public interface BidListService {
      * Save a new BidList
      * @param bidList the BidList to save
      */
-    void saveBidList(final BidList bidList);
+    BidList saveBidList(final BidList bidList);
 
     /**
-     * Update an existing BidList
-     * @param bidList the BidList to update
+     * Find all BidList
+     * @return a list of all BidList
      */
-    void updateBidList(final BidList bidList) throws UnknownBidList;
-
-    /**
-     * Delete an existing BidList
-     * @param id the id of the BidList to delete
-     */
-    void deleteBidList(final Integer id);
+    List<BidList> findAllBidList();
 
     /**
      * Find by id BidList
@@ -36,8 +30,14 @@ public interface BidListService {
     Optional<BidList> findBidListById(final Integer id);
 
     /**
-     * Find all BidList
-     * @return a list of all BidList
+     * Update an existing BidList
+     * @param bidList the BidList to update
      */
-    List<BidList> findAllBidList();
+    BidList updateBidList(final BidList bidList) throws UnknownBidList;
+
+    /**
+     * Delete an existing BidList
+     * @param id the id of the BidList to delete
+     */
+    void deleteBidList(final Integer id);
 }

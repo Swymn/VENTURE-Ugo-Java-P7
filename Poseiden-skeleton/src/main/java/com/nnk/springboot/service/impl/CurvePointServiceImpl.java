@@ -24,8 +24,8 @@ public class CurvePointServiceImpl implements CurvePointService {
      * {@inheritDoc}
      */
     @Override
-    public void saveCurvePoint(final CurvePoint curvePoint) {
-        curvePointRepository.save(curvePoint);
+    public CurvePoint saveCurvePoint(final CurvePoint curvePoint) {
+        return curvePointRepository.save(curvePoint);
     }
 
     /**
@@ -48,9 +48,9 @@ public class CurvePointServiceImpl implements CurvePointService {
      * {@inheritDoc}
      */
     @Override
-    public void updateCurvePoint(final CurvePoint curvePoint) throws UnknownCurvePoint {
+    public CurvePoint updateCurvePoint(final CurvePoint curvePoint) throws UnknownCurvePoint {
         if (curvePointRepository.existsById(curvePoint.getId())) {
-            curvePointRepository.save(curvePoint);
+            return curvePointRepository.save(curvePoint);
         } else {
             throw new UnknownCurvePoint(curvePoint.getId());
         }

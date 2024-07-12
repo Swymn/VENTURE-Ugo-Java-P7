@@ -15,7 +15,7 @@ public interface CurvePointService {
      * Save a new CurvePoint
      * @param curvePoint the CurvePoint to save
      */
-    void saveCurvePoint(CurvePoint curvePoint);
+    CurvePoint saveCurvePoint(CurvePoint curvePoint);
 
     /**
      * Find all CurvePoint
@@ -35,7 +35,7 @@ public interface CurvePointService {
      * @param curvePoint the CurvePoint to update
      * @throws UnknownCurvePoint if the CurvePoint with the given id is not found
      */
-    void updateCurvePoint(CurvePoint curvePoint) throws UnknownCurvePoint;
+    CurvePoint updateCurvePoint(CurvePoint curvePoint) throws UnknownCurvePoint;
 
     /**
      * Delete an existing CurvePoint

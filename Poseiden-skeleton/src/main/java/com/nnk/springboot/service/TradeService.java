@@ -15,7 +15,7 @@ public interface TradeService {
      * Save a new trade.
      * @param trade the trade to save
      */
-    void saveTrade(Trade trade);
+    Trade saveTrade(Trade trade);
 
     /**
      * Find all trades.
@@ -35,7 +35,7 @@ public interface TradeService {
      * @param trade the trade to update
      * @throws UnknownTrade if the trade is not found
      */
-    void updateTrade(Trade trade) throws UnknownTrade;
+    Trade updateTrade(Trade trade) throws UnknownTrade;
 
     /**
      * Delete a trade.
