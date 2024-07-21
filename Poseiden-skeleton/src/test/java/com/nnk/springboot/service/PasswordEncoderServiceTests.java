@@ -1,15 +1,20 @@
 package com.nnk.springboot.service;
 
+import com.nnk.springboot.service.impl.PasswordEncoderServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class PasswordEncoderServiceTests {
 
-    @Autowired
     private PasswordEncoderService passwordEncoderService;
+
+    @BeforeEach
+    void setUp() {
+        passwordEncoderService = new PasswordEncoderServiceImpl();
+    }
 
     @Test
     void encode_shouldEncode_givenPassword() {
