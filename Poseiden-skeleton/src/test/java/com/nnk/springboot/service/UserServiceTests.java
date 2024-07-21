@@ -14,9 +14,9 @@ import java.util.Optional;
 
 class UserServiceTests {
 
+    private UserRepository userRepository;
     private UserService userService;
     private PasswordEncoderService encoderService;
-    private UserRepository userRepository;
 
     @BeforeEach
     public void setUp() {

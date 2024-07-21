@@ -89,5 +89,5 @@ CREATE TABLE user (
 );
 
 INSERT INTO user(fullname, username, password, role) VALUES
-("Administrator", "admin", "$2a$10$r8bNut7Pv0.r1t3YyX0mKOb5VUdTfqU8RNSjbQ/IPVbicSg08siNm", "ADMIN"),
-("User", "user", "$2a$10$r8bNut7Pv0.r1t3YyX0mKOb5VUdTfqU8RNSjbQ/IPVbicSg08siNm", "USER");
+("Administrator", "admin", "$2a$10$Xbfm2PdeKS6LbfdpTC0SieGY2VDp6PD.HPHNPZ35BGHKqN0bcFYxi", "ADMIN"),
+("User", "user", "$2a$10$Xbfm2PdeKS6LbfdpTC0SieGY2VDp6PD.HPHNPZ35BGHKqN0bcFYxi", "USER");

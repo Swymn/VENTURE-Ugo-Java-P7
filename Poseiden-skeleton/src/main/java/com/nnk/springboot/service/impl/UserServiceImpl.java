@@ -1,18 +1,22 @@
 package com.nnk.springboot.service.impl;
 
 import com.nnk.springboot.domain.User;
+import com.nnk.springboot.domain.UserSecurity;
 import com.nnk.springboot.errors.UnknownUser;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.service.PasswordEncoderService;
 import com.nnk.springboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoderService encoderService;
@@ -85,5 +89,13 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UnknownUser(id);
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+        final var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        return new UserSecurity(user);
     }
 }
