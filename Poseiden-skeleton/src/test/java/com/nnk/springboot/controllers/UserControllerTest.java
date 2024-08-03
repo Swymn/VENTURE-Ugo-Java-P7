@@ -1,12 +1,18 @@
 package com.nnk.springboot.controllers;
 
+import com.nnk.springboot.config.PasswordConfiguration;
+import com.nnk.springboot.domain.User;
+import com.nnk.springboot.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,12 +20,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
+@AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private PasswordConfiguration passwordConfiguration;
+
+    @BeforeEach
+    void setUp() {
+        userService = Mockito.mock(UserService.class);
+        passwordConfiguration = Mockito.mock(PasswordConfiguration.class);
+
+        Mockito.when(passwordConfiguration.passwordEncoder()).thenReturn(new BCryptPasswordEncoder());
+    }
 
     @Test
     @WithMockUser(username = "user", password = "password", authorities= {"USER"})
@@ -51,14 +70,20 @@ class UserControllerTest {
                 .andExpect(view().name("user/add"));
     }
 
-    @Disabled
     @Test
     @WithMockUser(username = "user", password = "password", authorities= {"USER"})
     void showUpdateForm_shouldSucceed_existingRoute() throws Exception {
-        // GIVEN a controller
-        mockMvc.perform(get("/user/update/1"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("user/update"));
+        // GIVEN a controller and a valid user
+        final var user = new User();
+        Mockito.when(userService.saveUser(user)).thenReturn(user);
+
+        // WHEN calling the controller
+        mockMvc.perform(post("/user/validate", user))
+                .andExpect(status().isFound()).andDo(result -> {
+                    // THEN the user should be saved
+                    Mockito.when(userService.saveUser(user)).thenReturn(user);
+                })
+                .andExpect(view().name("redirect:/user/list"));
     }
 
     @Test

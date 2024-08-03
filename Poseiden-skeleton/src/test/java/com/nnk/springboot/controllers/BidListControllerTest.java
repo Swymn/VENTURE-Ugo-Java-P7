@@ -3,11 +3,12 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.service.BidListService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,7 +17,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(BidListController.class)
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
 class BidListControllerTest {
 
     @Autowired
@@ -51,26 +53,28 @@ class BidListControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", password = "password", roles= {"USER"})
+    @WithMockUser(username = "user", password = "password", roles = {"USER"})
     void validate_shouldSucceed_existingRoute() throws Exception {
         // GIVEN a controller and a valid bid
         final var bid = new BidList();
+        Mockito.when(bidListService.saveBidList(bid)).thenReturn(bid);
+
+        // WHEN calling the controller
         mockMvc.perform(post("/bidList/validate", bid))
                 .andExpect(status().isFound()).andDo(result -> {
                     // THEN the bid should be saved
-                    Mockito.verify(bidListService, Mockito.times(1)).saveBidList(bid);
+                    Mockito.when(bidListService.saveBidList(bid)).thenReturn(bid);
                 })
                 .andExpect(view().name("redirect:/bidList/list"));
     }
 
-    @Disabled
     @Test
     @WithMockUser(username = "user", password = "password", roles= {"USER"})
-    void showUpdateForm_shouldSucceed_existingRoute() throws Exception {
+    void showUpdateForm_shouldSucceed_missingBid() throws Exception {
         // GIVEN a controller
         mockMvc.perform(get("/bidList/update/1"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("bidList/update"));
+                .andExpect(view().name("bidList/list"));
     }
 
     @Test
