@@ -2,7 +2,6 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.service.BidListService;
-import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,11 +27,6 @@ class BidListControllerTest {
 
     @MockBean
     private BidListService bidListService;
-
-    @BeforeEach
-    void setUp() {
-        bidListService = Mockito.mock(BidListService.class);
-    }
 
     @Test
     @WithMockUser(username = "user", password = "password", roles= {"USER"})
@@ -75,6 +71,21 @@ class BidListControllerTest {
         mockMvc.perform(get("/bidList/update/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("bidList/list"));
+    }
+
+    @Test
+    @WithMockUser(username = "user", password = "password", roles= {"USER"})
+    void showUpdateForm_shouldSucceed_existingRoute() throws Exception {
+        // GIVEN a controller
+        final var bid = new BidList();
+        Mockito.when(bidListService.findBidListById(1)).thenReturn(Optional.of(bid));
+
+        // WHEN calling the controller
+        mockMvc.perform(get("/bidList/update/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("bidList/update"))
+                .andExpect(model().attributeExists("bidList"))
+                .andExpect(model().attribute("bidList", bid));
     }
 
     @Test

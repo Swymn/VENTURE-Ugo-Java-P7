@@ -2,8 +2,6 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.service.CurvePointService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +26,6 @@ class CurveControllerTest {
 
     @MockBean
     private CurvePointService curvePointService;
-
-    @BeforeEach
-    void setUp() {
-        curvePointService = Mockito.mock(CurvePointService.class);
-    }
 
     @Test
     @WithMockUser(username = "user", password = "password", roles= {"USER"})
@@ -71,7 +64,15 @@ class CurveControllerTest {
     }
 
     @Test
-    @Disabled
+    @WithMockUser(username = "user", password = "password", roles= {"USER"})
+    void showUpdateForm_shouldSucceed_missingBid() throws Exception {
+        // GIVEN a controller
+        mockMvc.perform(get("/curvePoint/update/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("curvePoint/list"));
+    }
+
+    @Test
     @WithMockUser(username = "user", password = "password", roles= {"USER"})
     void showUpdateForm_shouldSucceed_existingRoute() throws Exception {
         // GIVEN a controller

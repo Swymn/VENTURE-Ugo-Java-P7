@@ -16,6 +16,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Optional;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,11 +31,6 @@ class RatingControllerTest {
 
     @MockBean
     private RatingService ratingService;
-
-    @BeforeEach
-    void setUp() {
-        ratingService = Mockito.mock(RatingService.class);
-    }
 
     @Test
     @WithMockUser(username = "user", password = "password", roles= {"USER"})
@@ -72,10 +69,21 @@ class RatingControllerTest {
     }
 
     @Test
-    @Disabled
+    @WithMockUser(username = "user", password = "password", roles= {"USER"})
+    void showUpdateForm_shouldSucceed_missingBid() throws Exception {
+        // GIVEN a controller
+        mockMvc.perform(get("/rating/update/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("rating/list"));
+    }
+
+    @Test
     @WithMockUser(username = "user", password = "password", roles= {"USER"})
     void showUpdateForm_shouldSucceed_existingRoute() throws Exception {
         // GIVEN a controller
+        final var rating = new Rating();
+        Mockito.when(ratingService.findRatingById(1)).thenReturn(Optional.of(rating));
+
         mockMvc.perform(get("/rating/update/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("rating/update"));

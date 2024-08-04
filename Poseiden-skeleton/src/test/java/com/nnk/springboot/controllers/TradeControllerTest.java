@@ -1,10 +1,7 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.service.TradeService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +9,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,11 +26,6 @@ class TradeControllerTest {
 
     @MockBean
     private TradeService tradeService;
-
-    @BeforeEach
-    void setUp() {
-        tradeService = Mockito.mock(TradeService.class);
-    }
 
     @Test
     @WithMockUser(username = "user", password = "password", authorities= {"USER"})
@@ -70,14 +63,25 @@ class TradeControllerTest {
                 .andExpect(view().name("redirect:/trade/list"));
     }
 
-    @Disabled
     @Test
     @WithMockUser(username = "user", password = "password", authorities= {"USER"})
     void showUpdateForm_shouldSucceed_existingRoute() throws Exception {
         // GIVEN a controller
+        final var trade = new Trade();
+        Mockito.when(tradeService.findTradeById(1)).thenReturn(Optional.of(trade));
+
         mockMvc.perform(get("/trade/update/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("trade/update"));
+    }
+
+    @Test
+    @WithMockUser(username = "user", password = "password", roles= {"USER"})
+    void showUpdateForm_shouldSucceed_missingBid() throws Exception {
+        // GIVEN a controller
+        mockMvc.perform(get("/trade/update/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("trade/list"));
     }
 
     @Test

@@ -16,6 +16,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Optional;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,11 +31,6 @@ class RuleNameControllerTest {
 
     @MockBean
     private RuleService ruleService;
-
-    @BeforeEach
-    void setUp() {
-        ruleService = Mockito.mock(RuleService.class);
-    }
 
     @Test
     @WithMockUser(username = "user", password = "password", authorities= {"USER"})
@@ -71,11 +68,22 @@ class RuleNameControllerTest {
                 .andExpect(view().name("redirect:/ruleName/list"));
     }
 
-    @Disabled
+    @Test
+    @WithMockUser(username = "user", password = "password", roles= {"USER"})
+    void showUpdateForm_shouldSucceed_missingBid() throws Exception {
+        // GIVEN a controller
+        mockMvc.perform(get("/ruleName/update/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("ruleName/list"));
+    }
+
     @Test
     @WithMockUser(username = "user", password = "password", authorities= {"USER"})
     void showUpdateForm_shouldSucceed_existingRoute() throws Exception {
         // GIVEN a controller
+        final var rule = new RuleName();
+        Mockito.when(ruleService.findRuleById(1)).thenReturn(Optional.of(rule));
+
         mockMvc.perform(get("/ruleName/update/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("ruleName/update"));
